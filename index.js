@@ -27,7 +27,16 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
-    
+    const jobCollection = client.db('jobBookDB').collection('job');
+
+    app.get('/job', async(req, res)=>{
+        const cursor = jobCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+        console.log(result)
+      })
+
+      
 
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();

@@ -36,7 +36,13 @@ async function run() {
         console.log(result)
       })
 
-      
+      app.post('/job', async(req, res)=>{
+        const job = req.body;
+        console.log(job);
+        const result = await jobCollection.insertOne(job)
+        res.send(result)
+        
+    })
 
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();

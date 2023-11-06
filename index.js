@@ -28,6 +28,7 @@ async function run() {
   try {
 
     const jobCollection = client.db('jobBookDB').collection('job');
+    const bidCollection = client.db('jobBookDB').collection('bids');
 
     app.get('/job', async(req, res)=>{
         const cursor = jobCollection.find();
@@ -49,6 +50,14 @@ async function run() {
         const result = await jobCollection.insertOne(job)
         res.send(result)
         
+    })
+
+    app.post('/bidjob', async(req, res)=>{
+      const job = req.body;
+      console.log(job);
+      const result = await bidCollection.insertOne(job)
+      res.send(result)
+      
     })
 
     // Connect the client to the server	(optional starting in v4.7)

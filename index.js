@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -30,6 +30,7 @@ async function run() {
     const jobCollection = client.db('jobBookDB').collection('job');
     const bidCollection = client.db('jobBookDB').collection('bids');
 
+    // 
     app.get('/job', async(req, res)=>{
         const cursor = jobCollection.find();
         const result = await cursor.toArray();
@@ -37,6 +38,7 @@ async function run() {
         console.log(result)
       })
 
+      // 
       app.get('/job/:id', async(req, res)=>{
         const id = req.params.id;
         const query = {_id: new ObjectId(id)};
@@ -44,6 +46,7 @@ async function run() {
         res.send(job);
       })
 
+      // 
       app.post('/job', async(req, res)=>{
         const job = req.body;
         console.log(job);
@@ -51,7 +54,9 @@ async function run() {
         res.send(result)
         
     })
+    
 
+    // 
     app.post('/bidjob', async(req, res)=>{
       const job = req.body;
       console.log(job);
@@ -60,6 +65,8 @@ async function run() {
       
     })
     
+    
+    // 
     app.get('/bidjob', async(req, res)=>{
       const cursor = bidCollection.find();
       const result = await cursor.toArray();
@@ -72,9 +79,43 @@ async function run() {
       const result = await jobCollection.deleteOne(query);
       res.send(result);
     })
+    
 
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    app.put('/job/:id', async(req, res)=>{
+      const id = req.params.id;
+      const updateProduct = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const product = {
+        $set:{
+          jobTitle: updateProduct.jobTitle, 
+          deadline: updateProduct.deadline, 
+          category: updateProduct.category, 
+          minPrice: updateProduct.minPrice, 
+          maxPrice: updateProduct.maxPrice, 
+          description: updateProduct.description, 
+        }
+      }
+      const result = await jobCollection.updateOne(filter, product, options);
+
+      res.send(result);
+    })
+    app.put('/bidjob/:id', async(req, res)=>{
+      const id = req.params.id;
+      const updateJob = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const job = {
+        $set:{
+          status: updateJob.status,
+        }
+      }
+      const result = await bidCollection.updateOne(filter, job, options);
+
+      res.send(result);
+    })
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");

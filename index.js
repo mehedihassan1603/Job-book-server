@@ -1,6 +1,7 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,7 +31,12 @@ async function run() {
     const jobCollection = client.db('jobBookDB').collection('job');
     const bidCollection = client.db('jobBookDB').collection('bids');
 
-    // 
+
+    // Auth realted API
+    
+
+
+    // Service related API
     app.get('/job', async(req, res)=>{
         const cursor = jobCollection.find();
         const result = await cursor.toArray();
@@ -114,6 +120,8 @@ async function run() {
 
       res.send(result);
     })
+
+    
 
 
     // Send a ping to confirm a successful connection

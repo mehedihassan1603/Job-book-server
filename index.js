@@ -8,7 +8,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ['http://localhost:5173'],
+  origin: [
+    'https://job-book-ae502.web.app',
+    'https://job-book-ae502.firebaseapp.com'
+  ],
   credentials: true
 }));
 app.use(express.json());
@@ -68,7 +71,8 @@ async function run() {
       res
       .cookie('token', token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
+        sameSite: 'none'
         
       })
       .send({success: true})
@@ -194,8 +198,7 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
+    
   }
 }
 run().catch(console.dir);

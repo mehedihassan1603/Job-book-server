@@ -14,12 +14,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-//job-book
-// JFvMk88sWRZCq0SH
-
-
-
-const uri = "mongodb+srv://job-book:JFvMk88sWRZCq0SH@cluster0.rl5ffdh.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rl5ffdh.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {

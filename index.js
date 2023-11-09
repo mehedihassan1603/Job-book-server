@@ -9,8 +9,10 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin: [
+    'http://localhost:5173',
     'https://job-book-ae502.web.app',
-    'https://job-book-ae502.firebaseapp.com'
+    'https://job-book-ae502.firebaseapp.com',
+    'https://oval-beam.surge.sh'
   ],
   credentials: true
 }));
@@ -72,7 +74,7 @@ async function run() {
       .cookie('token', token, {
         httpOnly: true,
         secure: true,
-        sameSite: 'none'
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
         
       })
       .send({success: true})
@@ -80,7 +82,10 @@ async function run() {
 
     app.post('/logout', async(req, res)=>{
       const user = req.body;
-      res.clearCookie('token', {maxAge: 0}).send({success: true})
+      console.log('logging out', user);
+      res
+      .clearCookie('token', {maxAge: 0, sameSite: 'none', secure: true})
+      .send({success: true})
     })
 
     // Service related API
@@ -195,7 +200,7 @@ async function run() {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     
